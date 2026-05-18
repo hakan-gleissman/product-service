@@ -1,0 +1,10 @@
+INSERT INTO products (name, description, price, stock) VALUES ('Keyboard', 'Mechanical keyboard with Nordic layout', 499.00, 25);
+INSERT INTO products (name, description, price, stock) VALUES ('Mouse', 'Wireless optical mouse', 249.00, 40);
+INSERT INTO products (name, description, price, stock) VALUES ('Monitor', '27 inch LED monitor', 1990.00, 12);
+INSERT INTO products (name, description, price, stock) VALUES ('USB-C Cable', 'One meter USB-C charging cable', 99.00, 100);
+INSERT INTO products (name, description, price, stock) VALUES ('Laptop Stand', 'Adjustable aluminium laptop stand', 349.00, 18);
+INSERT INTO products (name, description, price, stock) VALUES ('Webcam', 'Full HD USB webcam', 699.00, 15);
+INSERT INTO products (name, description, price, stock) VALUES ('Headset', 'Over-ear headset with microphone', 599.00, 22);
+INSERT INTO products (name, description, price, stock) VALUES ('Docking Station', 'USB-C docking station with HDMI and Ethernet', 1290.00, 8);
+INSERT INTO products (name, description, price, stock) VALUES ('Desk Lamp', 'LED desk lamp with dimmer', 399.00, 30);
+INSERT INTO products (name, description, price, stock) VALUES ('External SSD', '1 TB portable external SSD', 1490.00, 10);

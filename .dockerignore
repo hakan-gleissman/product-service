@@ -1,0 +1,6 @@
+!.mvn/
+!.mvn/wrapper/
+.git/
+.idea/
+*.iml
+.DS_Store
