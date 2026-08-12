@@ -27,7 +27,11 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/error").permitAll()
-                        .requestMatchers("/product-service/swagger-ui/**", "/product-service/swagger-ui.html", "/product-service/v3/api-docs/**").permitAll()
+                        .requestMatchers(
+                                "/product-service/swagger-ui.html",
+                                "/product-service/v3/api-docs/**",
+                                "/swagger-ui/**"
+                        ).permitAll()
                         .requestMatchers(HttpMethod.GET, "/products", "/products/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.POST, "/products/stock/decrease").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.POST, "/products").hasRole("ADMIN")
