@@ -29,6 +29,7 @@ public class SecurityConfig {
                         .requestMatchers("/error").permitAll()
                         .requestMatchers(
                                 "/product-service/swagger-ui.html",
+                                "/product-service/swagger-ui/index.html",
                                 "/product-service/v3/api-docs/**",
                                 "/swagger-ui/**"
                         ).permitAll()
