@@ -28,10 +28,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/error").permitAll()
                         .requestMatchers(
-                                "/product-service/swagger-ui.html",
-                                "/product-service/swagger-ui/index.html",
-                                "/product-service/v3/api-docs/**",
-                                "/swagger-ui/**"
+                                "/products/swagger-ui/**",
+                                "/products/swagger-ui.html",
+                                "/products/v3/api-docs/**"
                         ).permitAll()
                         .requestMatchers(HttpMethod.GET, "/products", "/products/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.POST, "/products/stock/decrease").hasAnyRole("USER", "ADMIN")
