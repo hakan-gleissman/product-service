@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 
 import java.math.BigDecimal;
 
@@ -20,6 +21,9 @@ public class Product {
     private String description;
     private BigDecimal price;
     private int stock;
+
+    @Version
+    private Long version;
 
     public Product() {
     }
@@ -51,6 +55,10 @@ public class Product {
         return stock;
     }
 
+    public Long getVersion() {
+        return version;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -69,5 +77,9 @@ public class Product {
 
     public void setStock(int stock) {
         this.stock = stock;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
     }
 }

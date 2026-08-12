@@ -2,10 +2,11 @@ package se.sprinto.hakan.productservice.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.server.ResponseStatusException;
 import se.sprinto.hakan.productservice.dto.ProductRequestDto;
 import se.sprinto.hakan.productservice.dto.ProductResponseDto;
-import se.sprinto.hakan.productservice.dto.StockDecreaseItemRequest;
+import se.sprinto.hakan.productservice.dto.OrderRequestItem;
 import se.sprinto.hakan.productservice.model.Product;
 import se.sprinto.hakan.productservice.repository.ProductRepository;
 
@@ -15,6 +16,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
@@ -56,33 +58,41 @@ public class ProductService {
     }
 
     @Transactional
-    public List<ProductResponseDto> decreaseStock(List<StockDecreaseItemRequest> requestedProducts) {
-        List<Long> productIds = requestedProducts.stream()
-                .map(StockDecreaseItemRequest::getProductId)
-                .toList();
+    public List<ProductResponseDto> decreaseStock(List<OrderRequestItem> requestedProducts) {
+        try {
+            List<Long> productIds = requestedProducts.stream()
+                    .map(OrderRequestItem::getProductId)
+                    .toList();
 
-        Map<Long, Product> productsById = productRepository.findAllById(productIds)
-                .stream()
-                .collect(Collectors.toMap(Product::getId, Function.identity()));
+            Map<Long, Product> productsById = productRepository.findAllById(productIds)
+                    .stream()
+                    .collect(Collectors.toMap(Product::getId, Function.identity()));
 
-        for (StockDecreaseItemRequest requestedProduct : requestedProducts) {
-            Product product = productsById.get(requestedProduct.getProductId());
-            if (product == null) {
-                throw new ResponseStatusException(NOT_FOUND, "Product not found: " + requestedProduct.getProductId());
+            for (OrderRequestItem requestedProduct : requestedProducts) {
+                Product product = productsById.get(requestedProduct.getProductId());
+                if (product == null) {
+                    throw new ResponseStatusException(NOT_FOUND, "Product not found: " + requestedProduct.getProductId());
+                }
+                if (product.getStock() < requestedProduct.getQuantity()) {
+                    throw new ResponseStatusException(BAD_REQUEST, "Not enough stock for product: " + product.getId());
+                }
             }
-            if (product.getStock() < requestedProduct.getQuantity()) {
-                throw new ResponseStatusException(BAD_REQUEST, "Not enough stock for product: " + product.getId());
+
+            for (OrderRequestItem requestedProduct : requestedProducts) {
+                Product product = productsById.get(requestedProduct.getProductId());
+                product.setStock(product.getStock() - requestedProduct.getQuantity());
             }
-        }
 
-        for (StockDecreaseItemRequest requestedProduct : requestedProducts) {
-            Product product = productsById.get(requestedProduct.getProductId());
-            product.setStock(product.getStock() - requestedProduct.getQuantity());
-        }
+            // Force the version check to happen inside this method so we can
+            // return a clear conflict response when concurrent updates collide.
+            productRepository.flush();
 
-        return requestedProducts.stream()
-                .map(requestedProduct -> toResponse(productsById.get(requestedProduct.getProductId())))
-                .toList();
+            return requestedProducts.stream()
+                    .map(requestedProduct -> toProductInfo(productsById.get(requestedProduct.getProductId()), requestedProduct.getQuantity()))
+                    .toList();
+        } catch (ObjectOptimisticLockingFailureException exception) {
+            throw new ResponseStatusException(CONFLICT, "Product stock was updated concurrently. Please retry.");
+        }
     }
 
     private Product findProductById(Long id) {
@@ -98,5 +108,11 @@ public class ProductService {
                 product.getPrice(),
                 product.getStock()
         );
+    }
+
+    private ProductResponseDto toProductInfo(Product product, int quantity) {
+        ProductResponseDto response = toResponse(product);
+        response.setQuantity(quantity);
+        return response;
     }
 }

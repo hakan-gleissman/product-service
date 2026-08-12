@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import se.sprinto.hakan.productservice.dto.ProductRequestDto;
 import se.sprinto.hakan.productservice.dto.ProductResponseDto;
-import se.sprinto.hakan.productservice.dto.StockDecreaseRequest;
+import se.sprinto.hakan.productservice.dto.OrderRequestItem;
 import se.sprinto.hakan.productservice.service.ProductService;
 
 import java.util.List;
@@ -49,7 +49,7 @@ public class ProductController {
     }
 
     @PostMapping("/stock/decrease")
-    public ResponseEntity<List<ProductResponseDto>> decreaseStock(@Valid @RequestBody StockDecreaseRequest request) {
-        return ResponseEntity.ok(productService.decreaseStock(request.getItems()));
+    public ResponseEntity<List<ProductResponseDto>> decreaseStock(@Valid @RequestBody List<OrderRequestItem> request) {
+        return ResponseEntity.ok(productService.decreaseStock(request));
     }
 }

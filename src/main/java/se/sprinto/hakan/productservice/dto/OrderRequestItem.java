@@ -3,7 +3,7 @@ package se.sprinto.hakan.productservice.dto;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
-public class StockDecreaseItemRequest {
+public class OrderRequestItem {
 
     @NotNull
     private Long productId;

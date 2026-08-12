@@ -47,14 +47,12 @@ class ProductControllerIntegrationTests {
                 .andExpect(jsonPath("$.stock").value(10));
 
         String stockRequest = """
-                {
-                  "items": [
-                    {
-                      "productId": 1,
-                      "quantity": 3
-                    }
-                  ]
-                }
+                [
+                  {
+                    "productId": 1,
+                    "quantity": 3
+                  }
+                ]
                 """;
 
         mockMvc.perform(post("/products/stock/decrease")

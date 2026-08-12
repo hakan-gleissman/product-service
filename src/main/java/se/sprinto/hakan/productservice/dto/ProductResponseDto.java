@@ -9,6 +9,7 @@ public class ProductResponseDto {
     private String description;
     private BigDecimal price;
     private int stock;
+    private int quantity;
 
     public ProductResponseDto() {
     }
@@ -41,6 +42,10 @@ public class ProductResponseDto {
         return stock;
     }
 
+    public int getQuantity() {
+        return quantity;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -59,5 +64,9 @@ public class ProductResponseDto {
 
     public void setStock(int stock) {
         this.stock = stock;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }
